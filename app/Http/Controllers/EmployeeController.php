@@ -12,9 +12,22 @@ class EmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $employees = Employee::all();
+        $searchTerm = $request->input('search', '');
+        $sortBy = $request->input('sort_by', 'first_name');
+        $sortOrder = $request->input('sort_order', 'asc');
+    
+        $employees = Employee::query()
+            ->when($searchTerm, function ($query, $searchTerm) {
+                return $query->where('first_name', 'like', "%{$searchTerm}%")
+                             ->orWhere('last_name', 'like', "%{$searchTerm}%")
+                             ->orWhere('email', 'like', "%{$searchTerm}%")
+                             ->orWhere('company', 'like', "%{$searchTerm}%");
+            })
+            ->orderBy($sortBy, $sortOrder)
+            ->paginate(10);
+    
         return view('employees.index', compact('employees'));
     }
 

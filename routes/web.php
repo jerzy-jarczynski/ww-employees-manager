@@ -14,8 +14,7 @@ use App\Http\Controllers\EmployeeController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Trasa do wyświetlania panelu pracowników pod adresem /
+Route::get('/', [EmployeeController::class, 'index'])->name('employees.index');
 
 Route::resource('employees', EmployeeController::class);
