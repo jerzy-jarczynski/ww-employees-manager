@@ -29,7 +29,7 @@
                 <td>{{ $employee->last_name }}</td>
                 <td>{{ $employee->company }}</td>
                 <td>{{ $employee->email }}</td>
-                <td>{{ implode(', ', $employee->phone_numbers) }}</td>
+                <td>{{ is_array($employee->phone_numbers) ? implode(', ', $employee->phone_numbers) : $employee->phone_numbers }}</td>
                 <td>{{ $employee->dietary_preferences }}</td>
             </tr>
             @endforeach
