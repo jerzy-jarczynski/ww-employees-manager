@@ -18,6 +18,10 @@ class EmployeeController extends Controller
         $sortBy = $request->input('sort_by', 'first_name');
         $sortOrder = $request->input('sort_order', 'asc');
     
+        if ($request->input('sort_order') && $request->input('last_sort_by') == $sortBy) {
+            $sortOrder = $request->input('sort_order') == 'asc' ? 'desc' : 'asc';
+        }
+    
         $employees = Employee::query()
             ->when($searchTerm, function ($query, $searchTerm) {
                 return $query->where('first_name', 'like', "%{$searchTerm}%")
@@ -28,7 +32,12 @@ class EmployeeController extends Controller
             ->orderBy($sortBy, $sortOrder)
             ->paginate(10);
     
-        return view('employees.index', compact('employees'));
+        return view('employees.index', [
+            'employees' => $employees,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
+            'lastSortBy' => $request->input('last_sort_by'),
+        ]);
     }
 
     /**

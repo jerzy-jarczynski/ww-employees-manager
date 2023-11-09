@@ -14,10 +14,10 @@
     <table class="table table-striped table-bordered table-responsive">
         <thead class="table-primary">
             <tr>
-                <th><a href="{{ route('employees.index', ['sort_by' => 'first_name']) }}">First Name</a></th>
-                <th><a href="{{ route('employees.index', ['sort_by' => 'last_name']) }}">Last Name</a></th>
-                <th><a href="{{ route('employees.index', ['sort_by' => 'company']) }}">Company</a></th>
-                <th><a href="{{ route('employees.index', ['sort_by' => 'email']) }}">Email</a></th>
+                <th><a href="{{ route('employees.index', ['sort_by' => 'first_name', 'sort_order' => request('sort_by') === 'first_name' && request('sort_order') === 'asc' ? 'desc' : 'asc']) }}">First Name</a></th>
+                <th><a href="{{ route('employees.index', ['sort_by' => 'last_name', 'sort_order' => request('sort_by') === 'last_name' && request('sort_order') === 'asc' ? 'desc' : 'asc']) }}">Last Name</a></th>
+                <th><a href="{{ route('employees.index', ['sort_by' => 'company', 'sort_order' => request('sort_by') === 'company' && request('sort_order') === 'asc' ? 'desc' : 'asc']) }}">Company</a></th>
+                <th><a href="{{ route('employees.index', ['sort_by' => 'email', 'sort_order' => request('sort_by') === 'email' && request('sort_order') === 'asc' ? 'desc' : 'asc']) }}">Email</a></th>
                 <th>Phone Numbers</th>
                 <th>Dietary Preferences</th>
             </tr>
@@ -37,7 +37,7 @@
     </table>
 
     <div>
-        {{ $employees->links('vendor.pagination.bootstrap-5') }}
+        {{ $employees->appends(['sort_by' => request('sort_by'), 'sort_order' => request('sort_order')])->links('vendor.pagination.bootstrap-5') }}
     </div>
 </div>
 @endsection
