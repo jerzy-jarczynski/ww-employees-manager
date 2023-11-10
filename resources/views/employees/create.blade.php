@@ -3,27 +3,31 @@
 @section('content')
 <div class="container mt-4">
     <h1>Add New Employee</h1>
-    <form action="{{ route('employees.store') }}" method="POST" id="createForm"> {{-- Dodano id do formularza --}}
+    <form action="{{ route('employees.store') }}" method="POST" id="createForm">
         @csrf
 
         <div class="mb-3">
             <label for="first_name" class="form-label">First Name</label>
             <input type="text" class="form-control" id="first_name" name="first_name" required>
+            <div class="invalid-feedback">First name is required.</div>
         </div>
 
         <div class="mb-3">
             <label for="last_name" class="form-label">Last Name</label>
             <input type="text" class="form-control" id="last_name" name="last_name" required>
+            <div class="invalid-feedback">Last name is required.</div>
         </div>
 
         <div class="mb-3">
             <label for="company" class="form-label">Company</label>
             <input type="text" class="form-control" id="company" name="company" required>
+            <div class="invalid-feedback">Company name is required.</div>
         </div>
 
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" id="email" name="email" required>
+            <div class="invalid-feedback">Please provide a valid email.</div>
         </div>
 
         <div class="mb-3">
@@ -46,9 +50,10 @@
             </select>
         </div>
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Submit</button>
+        <button type="button" class="btn btn-primary" id="submitButton">Submit</button>
     </form>
 
+    {{-- Confirmation Modal --}}
     <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -65,10 +70,60 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 </div>
 
 <script>
+    document.getElementById('submitButton').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        let isFormValid = true;
+
+        // Validate First Name
+        const firstName = document.getElementById('first_name');
+        if (!firstName.value.trim()) {
+            firstName.classList.add('is-invalid');
+            isFormValid = false;
+        } else {
+            firstName.classList.remove('is-invalid');
+        }
+
+        // Validate Last Name
+        const lastName = document.getElementById('last_name');
+        if (!lastName.value.trim()) {
+            lastName.classList.add('is-invalid');
+            isFormValid = false;
+        } else {
+            lastName.classList.remove('is-invalid');
+        }
+
+        // Validate Company
+        const company = document.getElementById('company');
+        if (!company.value.trim()) {
+            company.classList.add('is-invalid');
+            isFormValid = false;
+        } else {
+            company.classList.remove('is-invalid');
+        }
+
+        // Validate Email
+        const email = document.getElementById('email');
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email.value.trim())) {
+            email.classList.add('is-invalid');
+            isFormValid = false;
+        } else {
+            email.classList.remove('is-invalid');
+        }
+
+        if (isFormValid) {
+            // Show the modal only if form is valid
+            const confirmationModalElement = document.getElementById('confirmationModal');
+            const confirmationModal = bootstrap.Modal.getOrCreateInstance(confirmationModalElement);
+            confirmationModal.show();
+        }
+    });
+
     document.getElementById('confirmButton').addEventListener('click', () => {
         const form = document.getElementById('createForm');
         fetch(form.action, {
@@ -103,10 +158,13 @@
             console.error('Error:', error);
             alert('An error occurred: ' + error.message);
         });
-    });
-</script>
 
-<script>
+        // Hide the modal after confirmation
+        const confirmationModalElement = document.getElementById('confirmationModal');
+        const confirmationModal = bootstrap.Modal.getOrCreateInstance(confirmationModalElement);
+        confirmationModal.hide();
+    });
+
     function addPhoneNumber() {
         const phoneNumbersDiv = document.getElementById('phone_numbers');
         const newPhoneNumberInput = document.createElement('div');
