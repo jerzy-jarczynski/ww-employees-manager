@@ -69,8 +69,8 @@
 </div>
 
 <script>
-    document.getElementById('confirmButton').addEventListener('click', function() {
-        var form = document.getElementById('createForm');
+    document.getElementById('confirmButton').addEventListener('click', () => {
+        const form = document.getElementById('createForm');
         fetch(form.action, {
             method: 'POST',
             body: new FormData(form),
@@ -80,7 +80,7 @@
         })
         .then(response => {
             if (!response.ok) {
-                if(response.status === 422) {
+                if (response.status === 422) {
                     return response.json().then(errors => {
                         const errorMessages = Object.values(errors.errors).map(err => err.join(', ')).join('\n');
                         throw new Error('Validation failed: ' + errorMessages);
@@ -92,7 +92,7 @@
         })
         .then(data => {
             if (data.success) {
-                setTimeout(function() {
+                setTimeout(() => {
                     window.location.href = '/';
                 }, 1500);
             } else {
@@ -107,19 +107,19 @@
 </script>
 
 <script>
-function addPhoneNumber() {
-    const phoneNumbersDiv = document.getElementById('phone_numbers');
-    const newPhoneNumberInput = document.createElement('div');
-    newPhoneNumberInput.classList.add('input-group', 'mb-2');
-    newPhoneNumberInput.innerHTML = `
-        <input type="tel" class="form-control" name="phone_numbers[]" placeholder="Enter phone number" required>
-        <button class="btn btn-outline-danger" type="button" onclick="removePhoneNumber(this)">-</button>
-    `;
-    phoneNumbersDiv.appendChild(newPhoneNumberInput);
-}
+    function addPhoneNumber() {
+        const phoneNumbersDiv = document.getElementById('phone_numbers');
+        const newPhoneNumberInput = document.createElement('div');
+        newPhoneNumberInput.classList.add('input-group', 'mb-2');
+        newPhoneNumberInput.innerHTML = `
+            <input type="tel" class="form-control" name="phone_numbers[]" placeholder="Enter phone number" required>
+            <button class="btn btn-outline-danger" type="button" onclick="removePhoneNumber(this)">-</button>
+        `;
+        phoneNumbersDiv.appendChild(newPhoneNumberInput);
+    }
 
-function removePhoneNumber(button) {
-    button.closest('.input-group').remove();
-}
+    function removePhoneNumber(button) {
+        button.closest('.input-group').remove();
+    }
 </script>
 @endsection
