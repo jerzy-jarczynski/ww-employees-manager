@@ -18,9 +18,6 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="/">Home</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-light" href="{{ route('employees.create') }}">Add Employee</a>
                         </li>
                     </ul>

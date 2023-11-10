@@ -39,6 +39,7 @@
                         @method('DELETE')
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" onclick="setDeleteAction('{{ route('employees.destroy', ['employee' => $employee->id]) }}')">Delete</button>
                     </form>
+                    <a href="{{ route('employees.show', ['employee' => $employee->id]) }}" class="btn btn-success">View</a> <!-- Add this line -->
                 </td>
             </tr>
             @endforeach

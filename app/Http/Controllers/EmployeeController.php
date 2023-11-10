@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeController extends Controller
 {
@@ -72,7 +73,7 @@ class EmployeeController extends Controller
         $employee = new Employee($validatedData);
         $employee->save();
     
-        return response()->json(['success' => 'Employee added successfully.']);
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -96,7 +97,7 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        \Log::info('Before Validation: ', $request->all());
+        Log::info('Before Validation: ', $request->all());
     
         $validatedData = $request->validate([
             'first_name' => 'required|max:255',
@@ -107,14 +108,14 @@ class EmployeeController extends Controller
             'dietary_preferences' => 'required|max:255',
         ]);
     
-        \Log::info('After Validation: ', $validatedData);
+        Log::info('After Validation: ', $validatedData);
     
         $employee = Employee::findOrFail($id);
         $employee->update($validatedData);
     
-        \Log::info('After Update: ', $employee->toArray());
+        Log::info('After Update: ', $employee->toArray());
     
-        return response()->json(['success' => 'Employee updated successfully.']);
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -129,5 +130,17 @@ class EmployeeController extends Controller
         $employee->delete();
     
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(string $id)
+    {
+        $employee = Employee::findOrFail($id);
+        return view('employees.show', compact('employee'));
     }    
 }
