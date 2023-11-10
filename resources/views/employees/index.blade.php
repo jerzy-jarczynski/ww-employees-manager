@@ -20,6 +20,7 @@
                 <th><a href="{{ route('employees.index', ['sort_by' => 'email', 'sort_order' => request('sort_by') === 'email' && request('sort_order') === 'asc' ? 'desc' : 'asc']) }}">Email</a></th>
                 <th>Phone Numbers</th>
                 <th>Dietary Preferences</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +32,14 @@
                 <td>{{ $employee->email }}</td>
                 <td>{{ is_array($employee->phone_numbers) ? implode(', ', $employee->phone_numbers) : $employee->phone_numbers }}</td>
                 <td>{{ $employee->dietary_preferences }}</td>
+                <td>
+                    <a href="{{ route('employees.edit', ['employee' => $employee->id]) }}" class="btn btn-primary">Edit</a>
+                    <form action="{{ route('employees.destroy', ['employee' => $employee->id]) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>
