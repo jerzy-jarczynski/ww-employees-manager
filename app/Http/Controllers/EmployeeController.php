@@ -41,6 +41,41 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('employees.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'company' => 'required|max:255',
+            'email' => 'required|email|unique:employees',
+            'phone_numbers' => 'required|array',
+            'dietary_preferences' => 'required|max:255',
+        ]);
+
+        $validatedData['phone_numbers'] = json_encode($validatedData['phone_numbers']);
+
+        $employee = new Employee($validatedData);
+        $employee->save();
+    
+        return response()->json(['success' => 'Employee added successfully.']);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  string  $id

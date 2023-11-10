@@ -1,10 +1,9 @@
-{{-- resources/views/employees/create.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
 <div class="container mt-4">
     <h1>Add New Employee</h1>
-    <form action="{{ route('employees.store') }}" method="POST">
+    <form action="{{ route('employees.store') }}" method="POST" id="createForm"> {{-- Dodano id do formularza --}}
         @csrf
 
         <div class="mb-3">
@@ -44,13 +43,68 @@
                 <option value="none">None</option>
                 <option value="vegetarian">Vegetarian</option>
                 <option value="vegan">Vegan</option>
-                <!-- Dodaj więcej opcji zgodnie z wymaganiami -->
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Submit</button>
     </form>
+
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Submission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to add this employee?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div> 
 </div>
+
+<script>
+    document.getElementById('confirmButton').addEventListener('click', function() {
+        var form = document.getElementById('createForm');
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                if(response.status === 422) {
+                    return response.json().then(errors => {
+                        const errorMessages = Object.values(errors.errors).map(err => err.join(', ')).join('\n');
+                        throw new Error('Validation failed: ' + errorMessages);
+                    });
+                }
+                throw new Error('Server responded with a status: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                setTimeout(function() {
+                    window.location.href = '/';
+                }, 1500);
+            } else {
+                alert('An error occurred while processing the form.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred: ' + error.message);
+        });
+    });
+</script>
 
 <script>
 function addPhoneNumber() {
