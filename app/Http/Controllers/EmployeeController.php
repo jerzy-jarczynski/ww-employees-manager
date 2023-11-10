@@ -79,7 +79,7 @@ class EmployeeController extends Controller
     
         \Log::info('After Update: ', $employee->toArray());
     
-        return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
+        return response()->json(['success' => 'Employee updated successfully.']);
     }
 
     /**
