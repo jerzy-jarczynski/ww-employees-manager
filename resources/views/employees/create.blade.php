@@ -1,5 +1,4 @@
 {{-- resources/views/employees/create.blade.php --}}
-
 @extends('layouts.app')
 
 @section('content')
@@ -29,8 +28,13 @@
         </div>
 
         <div class="mb-3">
-            <label for="phone_number" class="form-label">Phone Number</label>
-            <input type="tel" class="form-control" id="phone_number" name="phone_numbers[]" required>
+            <label for="phone_numbers" class="form-label">Phone Numbers</label>
+            <div id="phone_numbers">
+                <div class="input-group mb-2">
+                    <input type="tel" class="form-control" name="phone_numbers[]" placeholder="Enter phone number" required>
+                    <button class="btn btn-outline-secondary" type="button" onclick="addPhoneNumber()">+</button>
+                </div>
+            </div>
         </div>
 
         <div class="mb-3">
@@ -40,10 +44,28 @@
                 <option value="none">None</option>
                 <option value="vegetarian">Vegetarian</option>
                 <option value="vegan">Vegan</option>
+                <!-- Dodaj więcej opcji zgodnie z wymaganiami -->
             </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+
+<script>
+function addPhoneNumber() {
+    const phoneNumbersDiv = document.getElementById('phone_numbers');
+    const newPhoneNumberInput = document.createElement('div');
+    newPhoneNumberInput.classList.add('input-group', 'mb-2');
+    newPhoneNumberInput.innerHTML = `
+        <input type="tel" class="form-control" name="phone_numbers[]" placeholder="Enter phone number" required>
+        <button class="btn btn-outline-danger" type="button" onclick="removePhoneNumber(this)">-</button>
+    `;
+    phoneNumbersDiv.appendChild(newPhoneNumberInput);
+}
+
+function removePhoneNumber(button) {
+    button.closest('.input-group').remove();
+}
+</script>
 @endsection

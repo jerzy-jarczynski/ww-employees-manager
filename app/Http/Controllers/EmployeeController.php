@@ -67,7 +67,16 @@ class EmployeeController extends Controller
             'dietary_preferences' => 'required|max:255',
         ]);
 
-        $employee = Employee::create($validatedData);
+        $phoneNumbers = json_encode($request->input('phone_numbers'));
+
+        $employee = Employee::create([
+            'first_name' => $validatedData['first_name'],
+            'last_name' => $validatedData['last_name'],
+            'company' => $validatedData['company'],
+            'email' => $validatedData['email'],
+            'phone_numbers' => $phoneNumbers,
+            'dietary_preferences' => $validatedData['dietary_preferences'],
+        ]);
         
         return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
     }
