@@ -48,45 +48,61 @@
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Save Changes</button>
     </form>
 
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <!-- Modal -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Confirm changes</h5>
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure to submit changes?
+                    Are you sure you want to delete this employee?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Confirm</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-      document.getElementById('confirmButton').addEventListener('click', function() {
-          var form = document.getElementById('editForm');
-          fetch(form.action, {
-              method: 'POST',
-              body: new FormData(form)
-          })
-          .then(response => response.json())
-          .then(data => {
-              if (data.success) {
-                  setTimeout(function() {
-                      window.location.href = '/';
-                  }, 1500);
-              } else {
-                  alert('An error occurred while processing the form.');
-              }
-          })
-          .catch(error => {
-              alert('An error occurred: ' + error);
-          });
-      });
-    </script> 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteConfirmationModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+        let employeeIdToDelete;
+
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', () => {
+                employeeIdToDelete = button.getAttribute('data-employee-id');
+                deleteConfirmationModal.show();
+            });
+        });
+
+        document.getElementById('confirmDeleteButton').addEventListener('click', () => {
+            fetch(`/employees/${employeeIdToDelete}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(`employee-${employeeIdToDelete}`).remove();
+                } else {
+                    throw new Error('An error occurred while processing the deletion.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred: ' + error.message);
+            });
+
+            deleteConfirmationModal.hide();
+        });
+    });
+</script>
 @endsection
